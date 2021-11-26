@@ -15,7 +15,7 @@ sudo apt install libnet1-dev
 Compile
 -------
 ``` console
-gcc unifi-mimic.c -lnet -o unifi-direct
+gcc unifi-mimic.c -lnet -o unifi-mimic
 ```
 
 Usage
