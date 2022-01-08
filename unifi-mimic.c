@@ -20,7 +20,7 @@ static void load_packet()
   }
 
   fseek(fp, 0, SEEK_END);
-  pkt_s = ftell(fp) / 2;
+  pkt_s = ftell(fp);
   rewind(fp);
 
   pkt_buf = (uint8_t *)malloc(pkt_s);
@@ -157,20 +157,15 @@ static void unifi_discover(const char *iface)
     exit(rc);
   }
 
-  int c = 10; // TODO: accept as argument?
   ssize_t bytes;
   socklen_t slen = sizeof(struct sockaddr_in);
 
-  while (c-- > 0) {
+  for (;;) {
     memset(buf, 0, sizeof(buf));
     bytes = recvfrom(sd, buf, sizeof(buf), 0, (struct sockaddr *)&sa_remote, &slen);
 
-    if (bytes < 0) {
-      if (errno != EAGAIN && errno != EWOULDBLOCK) {
-        fprintf(stderr, "Error reading packet: %s\n", strerror(errno));
-        continue;
-      }
-    }
+    if (bytes < 0 && (errno == EAGAIN || errno == EWOULDBLOCK))
+      break;
 
     if (bytes > 0) {
       printf("Packet from %s\n", inet_ntoa(sa_remote.sin_addr));
