@@ -32,7 +32,7 @@ of the discovered device and will contain UDP payload data.
 
 **Step 2**: Run unifi-mimic on the same L3 network as the device that runs the
 UniFi Protect mobile app.  Copy the file from Step 1 and specify it as
-a command line argument.  Do not rename the file.
+a command line argument.
 
 ``` console
 ./unifi-mimic -L -p <file> -i <interface>
