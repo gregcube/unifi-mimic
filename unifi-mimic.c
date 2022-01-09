@@ -119,8 +119,10 @@ static void unifi_discover(const char *iface)
   int rc;
   char buf[1024] = {1, 0, 0, 0};
   char addr[INET_ADDRSTRLEN];
+  char file[INET_ADDRSTRLEN + 2];
   struct sockaddr_in sa_mcast, sa_remote;
   struct in_addr if_addr;
+  struct stat statbuf;
   FILE *fp;
 
   sd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -164,21 +166,27 @@ static void unifi_discover(const char *iface)
     exit(rc);
   }
 
-  ssize_t bytes;
   socklen_t slen = sizeof(struct sockaddr_in);
 
   for (;;) {
     memset(buf, 0, sizeof(buf));
-    bytes = recvfrom(sd, buf, sizeof(buf), 0, (struct sockaddr *)&sa_remote, &slen);
+    memset(&addr, 0, sizeof(addr));
+
+    ssize_t bytes = recvfrom(sd, buf, sizeof(buf), 0, (struct sockaddr *)&sa_remote, &slen);
 
     if (bytes < 0 && (errno == EAGAIN || errno == EWOULDBLOCK))
       break;
 
     if (bytes > 0) {
       inet_ntop(AF_INET, &sa_remote.sin_addr, addr, INET_ADDRSTRLEN);
+      strncpy(file, addr, INET_ADDRSTRLEN);
       printf("Packet from %s\n", addr);
-      fp = fopen(addr, "w");
 
+      int i = 1;
+      while (stat(file, &statbuf) == 0)
+        snprintf(file, INET_ADDRSTRLEN + 2, "%s-%d", addr, i++);
+
+      fp = fopen(file, "w");
       if (fp == NULL) {
         fprintf(stderr, "Cannot open file: %s\n", strerror(errno));
         continue;
