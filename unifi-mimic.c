@@ -202,21 +202,16 @@ static void unifi_discover(const char *iface)
 
 void unifi_listen(const char *iface)
 {
-  struct sockaddr_in sa_mcast, sa_remote, sa_dst;
+  struct sockaddr_in sa_mcast, sa_remote;
   struct ip_mreq mreq;
   char buf[1024], addr[INET_ADDRSTRLEN];
 
   memset(&sa_mcast, 0, sizeof(sa_mcast));
-  memset(&sa_dst, 0, sizeof(sa_dst));
   memset(buf, 0, sizeof(buf));
 
   sa_mcast.sin_family = AF_INET;
   sa_mcast.sin_port = htons(MCAST_PORT);
   sa_mcast.sin_addr.s_addr = inet_addr(MCAST_ADDR);
-
-  sa_dst.sin_family = AF_INET;
-  sa_dst.sin_port = htons(MCAST_PORT);
-  sa_dst.sin_addr = unifi_ip;
 
   if ((sd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
     fprintf(stderr, "Failed to create socket: %s\n", strerror(errno));
