@@ -204,6 +204,7 @@ void unifi_listen(const char *iface)
 {
   struct sockaddr_in sa_mcast, sa_remote;
   struct ip_mreq mreq;
+  const char pkt_remote[4] = {1, 0, 0, 0};
   char buf[1024], addr[INET_ADDRSTRLEN];
 
   memset(&sa_mcast, 0, sizeof(sa_mcast));
@@ -252,6 +253,7 @@ void unifi_listen(const char *iface)
 
   while (run) {
     if (recvfrom(sd, buf, sizeof(buf), 0, (struct sockaddr *)&sa_remote, &slen) > 0) {
+      if (strncmp(buf, pkt_remote, 4) != 0) continue;
       send_packet(ntohs(sa_remote.sin_port), &sa_remote.sin_addr);
     }
   }
