@@ -205,7 +205,7 @@ void unifi_listen(const char *iface)
   struct sockaddr_in sa_mcast, sa_remote;
   struct ip_mreq mreq;
   const char pkt_remote[4] = {1, 0, 0, 0};
-  char buf[1024], addr[INET_ADDRSTRLEN];
+  char buf[4], addr[INET_ADDRSTRLEN];
 
   memset(&sa_mcast, 0, sizeof(sa_mcast));
   memset(buf, 0, sizeof(buf));
