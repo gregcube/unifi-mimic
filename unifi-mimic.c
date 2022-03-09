@@ -1,3 +1,17 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+#include <unistd.h>
+#include <errno.h>
+#include <signal.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+
+#include <netinet/in.h>
 #include <libnet.h>
 #include <ifaddrs.h>
 
@@ -200,7 +214,7 @@ static void unifi_discover(const char *iface)
   }
 }
 
-void unifi_listen(const char *iface)
+static void unifi_listen(const char *iface)
 {
   struct sockaddr_in sa_mcast, sa_remote;
   struct ip_mreq mreq;
@@ -253,8 +267,8 @@ void unifi_listen(const char *iface)
 
   while (run) {
     if (recvfrom(sd, buf, sizeof(buf), 0, (struct sockaddr *)&sa_remote, &slen) > 0) {
-      if (strncmp(buf, pkt_remote, 4) != 0) continue;
-      send_packet(ntohs(sa_remote.sin_port), &sa_remote.sin_addr);
+      if (strncmp(buf, pkt_remote, 4) == 0)
+        send_packet(ntohs(sa_remote.sin_port), &sa_remote.sin_addr);
     }
   }
 }
@@ -366,6 +380,8 @@ int main(int argc, char **argv)
     unifi_listen(iface);
   }
 
+  free(iface);
   return 0;
 }
 
+// vi: expandtab shiftwidth=2 softtabstop=2 tabstop=2
