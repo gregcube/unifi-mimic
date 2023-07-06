@@ -1,5 +1,3 @@
-*This hack is no longer needed. Direct connections now work over vlans/ subnets. Not sure when Unifi introduced this but it seems to have happened quietly.*
-
 unifi-mimic
 ===========
 
