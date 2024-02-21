@@ -1,6 +1,12 @@
 unifi-mimic
 ===========
 
+*This project is no longer needed for local/ direct connections.
+You can now establish direct connections (as of UniFi Protect Android app
+version 1.20.0) by manually specifying your UNVR IP address.*
+
+-----------
+
 Connect directly to UNVR with UniFi Protect mobile app when on
 different layer 3 networks/ subnets.
 
